@@ -28,7 +28,7 @@
             align-items: center;
             min-height: 100vh;
             overflow: hidden;
-            padding-bottom: 80px; 
+            padding-bottom: 140px; /* Espaço para as duas linhas de anúncio */
         }
 
         .app-title {
@@ -197,16 +197,21 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: auto;
-            min-height: 60px;
             background: #000;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            flex-direction: column; /* Força um em cima do outro */
             align-items: center;
+            justify-content: center;
             z-index: 1000;
             border-top: 1px solid var(--current-color);
             padding: 5px 0;
+        }
+
+        .ad-row {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            min-height: 55px; /* Altura mínima de cada linha */
         }
 
         .error-shake { animation: shake 0.4s; border-color: var(--neon-red) !important; }
@@ -274,11 +279,19 @@
         // --- LÓGICA DE ATUALIZAÇÃO DOS ANÚNCIOS ---
         function refreshAds() {
             const adContainer = document.getElementById('ad-footer');
-            adContainer.innerHTML = ''; // Limpa os anúncios anteriores
+            adContainer.innerHTML = ''; // Limpa tudo
+
+            // Criar duas linhas distintas
+            const row1 = document.createElement('div');
+            row1.className = 'ad-row';
+            const row2 = document.createElement('div');
+            row2.className = 'ad-row';
             
-            // 1. Configuração do Anúncio 1 (Original - Adsterra/Similar)
+            adContainer.appendChild(row1);
+            adContainer.appendChild(row2);
+
+            // --- LINHA 1: ANÚNCIO 1 (Adsterra) ---
             const scriptConfig1 = document.createElement('script');
-            scriptConfig1.type = 'text/javascript';
             scriptConfig1.text = `
                 atOptions = {
                     'key' : '2a5e7302edec5e07fb8153e06aa96446',
@@ -288,35 +301,32 @@
                     'params' : {}
                 };
             `;
-            
             const scriptInvoke1 = document.createElement('script');
-            scriptInvoke1.type = 'text/javascript';
             scriptInvoke1.src = 'https://www.highperformanceformat.com/2a5e7302edec5e07fb8153e06aa96446/invoke.js';
             
-            // 2. Configuração do Anúncio 2 (Novo - Surfe.pro)
+            row1.appendChild(scriptConfig1);
+            row1.appendChild(scriptInvoke1);
+
+            // --- LINHA 2: ANÚNCIO 2 (Surfe.pro) ---
+            const scriptSurfeJS = document.createElement('script');
+            scriptSurfeJS.src = '//static.surfe.pro/js/net.js';
+            
             const insSurfe = document.createElement('ins');
             insSurfe.className = 'surfe-be';
             insSurfe.setAttribute('data-sid', '420510');
             
-            const scriptSurfeSource = document.createElement('script');
-            scriptSurfeSource.src = '//static.surfe.pro/js/net.js';
-            
             const scriptSurfePush = document.createElement('script');
             scriptSurfePush.text = `(adsurfebe = window.adsurfebe || []).push({});`;
 
-            // Adiciona tudo ao footer
-            adContainer.appendChild(scriptConfig1);
-            adContainer.appendChild(scriptInvoke1);
-            adContainer.appendChild(insSurfe);
-            adContainer.appendChild(scriptSurfeSource);
-            adContainer.appendChild(scriptSurfePush);
+            row2.appendChild(scriptSurfeJS);
+            row2.appendChild(insSurfe);
+            row2.appendChild(scriptSurfePush);
         }
 
-        // Inicia e define intervalo de 30 segundos
         refreshAds();
         setInterval(refreshAds, 30000); 
 
-        // --- SEU CÓDIGO ORIGINAL ABAIXO ---
+        // --- CÓDIGO ORIGINAL DO JOGO ---
         const phases = [
             { name: "FASE 1 // KERNEL", target: 50, color: "#00f3ff", ops: ['+'], range: 10 },
             { name: "FASE 2 // FIREWALL", target: 150, color: "#bc13fe", ops: ['+', '-'], range: 25 },
